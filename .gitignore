@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Build & Environment
+dist/
+build/
+.env
+smartcity.db
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
