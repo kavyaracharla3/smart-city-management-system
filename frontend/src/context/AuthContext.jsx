@@ -4,6 +4,34 @@ import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
+const extractErrorMessage = (error, defaultMsg) => {
+  if (error.response?.data?.detail) {
+    const detail = error.response.data.detail;
+    if (typeof detail === 'string') {
+      return detail;
+    }
+    if (Array.isArray(detail)) {
+      return detail
+        .map((err) => {
+          if (typeof err === 'string') return err;
+          if (err.msg) {
+            const field = err.loc && err.loc.length > 1 ? err.loc[err.loc.length - 1] : '';
+            return field ? `${field}: ${err.msg}` : err.msg;
+          }
+          return JSON.stringify(err);
+        })
+        .join(', ');
+    }
+    if (typeof detail === 'object') {
+      return JSON.stringify(detail);
+    }
+  }
+  if (error.code === 'ERR_NETWORK' || error.message === 'Network Error' || !error.response) {
+    return 'Backend server is unreachable. Please ensure the backend API server is running on port 8000.';
+  }
+  return error.message || defaultMsg;
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('smartcity_user');
@@ -32,7 +60,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await authAPI.login(email, password);
+      const cleanEmail = email ? email.trim() : '';
+      const res = await authAPI.login(cleanEmail, password);
       const { access_token, user: userData } = res.data;
       
       setToken(access_token);
@@ -42,17 +71,19 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('smartcity_user', JSON.stringify(userData));
       
       toast.success(`Welcome back, ${userData.name}!`);
-      return true;
+      return { success: true };
     } catch (error) {
-      const msg = error.response?.data?.detail || 'Invalid email or password';
+      const msg = extractErrorMessage(error, 'Invalid email or password');
       toast.error(msg);
-      return false;
+      return { success: false, error: msg };
     }
   };
 
   const register = async (name, email, password, role = 'user') => {
     try {
-      const res = await authAPI.register(name, email, password, role);
+      const cleanName = name ? name.trim() : '';
+      const cleanEmail = email ? email.trim() : '';
+      const res = await authAPI.register(cleanName, cleanEmail, password, role);
       const { access_token, user: userData } = res.data;
 
       setToken(access_token);
@@ -62,11 +93,11 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('smartcity_user', JSON.stringify(userData));
 
       toast.success('Registration successful! Welcome to Smart City Platform.');
-      return true;
+      return { success: true };
     } catch (error) {
-      const msg = error.response?.data?.detail || 'Registration failed';
+      const msg = extractErrorMessage(error, 'Registration failed');
       toast.error(msg);
-      return false;
+      return { success: false, error: msg };
     }
   };
 
@@ -86,3 +117,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+

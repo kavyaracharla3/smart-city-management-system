@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, Lock, Mail, ArrowRight, KeyRound } from 'lucide-react';
+import { Shield, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -13,14 +14,18 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const success = await login(email, password);
+    setError('');
+    const res = await login(email, password);
     setLoading(false);
-    if (success) {
+    if (res?.success) {
       navigate('/dashboard');
+    } else {
+      setError(res?.error || 'Invalid email or password.');
     }
   };
 
   const fillDemoCredentials = (type) => {
+    setError('');
     if (type === 'admin') {
       setEmail('admin@smartcity.gov.in');
       setPassword('admin123');
@@ -63,6 +68,13 @@ export const Login = () => {
             </div>
           </div>
 
+          {error && (
+            <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
@@ -72,7 +84,10 @@ export const Login = () => {
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError('');
+                  }}
                   placeholder="admin@smartcity.gov.in"
                   className="w-full pl-9 pr-4 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-cyan-500 transition-all"
                 />
@@ -87,7 +102,10 @@ export const Login = () => {
                   type="password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError('');
+                  }}
                   placeholder="••••••••"
                   className="w-full pl-9 pr-4 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-cyan-500 transition-all"
                 />
@@ -121,3 +139,4 @@ export const Login = () => {
     </div>
   );
 };
+
