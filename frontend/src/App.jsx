@@ -17,8 +17,10 @@ import { WaterAnalytics } from './pages/WaterAnalytics';
 import { EmergencyAlerts } from './pages/EmergencyAlerts';
 import { PollutionMonitoring } from './pages/PollutionMonitoring';
 import { ReportsAnalytics } from './pages/ReportsAnalytics';
+import { Collaboration } from './pages/Collaboration';
 import { Settings } from './pages/Settings';
 import { Profile } from './pages/Profile';
+
 
 import { Toaster } from 'react-hot-toast';
 
@@ -79,7 +81,9 @@ export function App() {
             <Route path="water" element={<WaterAnalytics />} />
             <Route path="emergency" element={<EmergencyAlerts />} />
             <Route path="pollution" element={<PollutionMonitoring />} />
+            <Route path="collaboration" element={<Collaboration />} />
             <Route path="reports" element={<ReportsAnalytics />} />
+
             <Route path="settings" element={<Settings />} />
             <Route path="profile" element={<Profile />} />
           </Route>

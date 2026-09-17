@@ -88,4 +88,17 @@ export const reportsAPI = {
   getPollutionReport: (zone) => api.get('/reports/pollution', { params: { zone } }),
 };
 
+export const collaborationAPI = {
+  getIssues: (zone, status, category) => api.get('/collaboration/issues', { params: { zone, status, category } }),
+  createIssue: (data) => api.post('/collaboration/issues', data),
+  updateIssue: (id, data) => api.put(`/collaboration/issues/${id}`, data),
+  getBulletins: () => api.get('/collaboration/bulletins'),
+  createBulletin: (data) => api.post('/collaboration/bulletins', data),
+  getActivityLogs: () => api.get('/collaboration/activity-logs'),
+  createActivityLog: (data) => api.post('/collaboration/activity-logs', data),
+  getNotes: (zone) => api.get('/collaboration/notes', { params: { zone } }),
+  createNote: (data) => api.post('/collaboration/notes', data),
+};
+
 export default api;
+

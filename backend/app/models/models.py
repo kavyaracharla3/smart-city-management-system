@@ -111,3 +111,59 @@ class Pollution(Base):
     lat = Column(Float, nullable=False)
     lng = Column(Float, nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow)
+
+
+class CitizenIssue(Base):
+    __tablename__ = "citizen_issues"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(String, unique=True, index=True, nullable=False)
+    category = Column(String, nullable=False)  # Pothole, Streetlight, Garbage Overflow, Water Burst, Traffic Signal, Noise
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    location = Column(String, nullable=False)
+    zone = Column(String, default="Hyderabad Central")
+    reporter_name = Column(String, default="Anonymous Citizen")
+    priority = Column(String, default="Medium")  # Low, Medium, High, Critical
+    status = Column(String, default="Reported")  # Reported, Crew Dispatched, Under Repair, Resolved
+    assigned_crew = Column(String, default="Unassigned")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+    lat = Column(Float, default=17.4065)
+    lng = Column(Float, default=78.4772)
+
+
+class CityBulletin(Base):
+    __tablename__ = "city_bulletins"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    message = Column(String, nullable=False)
+    category = Column(String, default="General")  # Emergency, Traffic, Water, Weather, Maintenance
+    urgency = Column(String, default="Normal")  # Low, Normal, High, Critical
+    posted_by = Column(String, default="Command Center")
+    active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ActivityLog(Base):
+    __tablename__ = "activity_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    operator_name = Column(String, nullable=False)
+    action_type = Column(String, nullable=False)  # DISPATCH, RESOLUTION, ALERT, BULLETIN, STATUS_UPDATE
+    module = Column(String, nullable=False)  # Traffic, Waste, Water, Emergency, Pollution, Collaboration
+    details = Column(String, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+
+class OperatorNote(Base):
+    __tablename__ = "operator_notes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    operator_name = Column(String, nullable=False)
+    role = Column(String, default="user")
+    zone = Column(String, default="All Zones")
+    note = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

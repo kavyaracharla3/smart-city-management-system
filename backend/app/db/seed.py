@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from app.models.models import User, Traffic, WasteBin, WaterUsage, WaterLeak, Emergency, Pollution
+from app.models.models import (
+    User, Traffic, WasteBin, WaterUsage, WaterLeak, Emergency, Pollution,
+    CitizenIssue, CityBulletin, ActivityLog, OperatorNote
+)
 from app.core.security import get_password_hash
 
 
@@ -123,4 +126,47 @@ def seed_data(db: Session):
         for p in pollution_data:
             db.add(Pollution(**p))
 
+    # 8. City Bulletins
+    if db.query(CityBulletin).count() == 0:
+        bulletins_data = [
+            {"title": "Monsoon Heavy Rainfall Alert", "message": "IMD predicts heavy downpours in Hitech City & Kukatpally. Drainage response crews on standby.", "category": "Emergency", "urgency": "Critical", "posted_by": "Hyderabad Disaster Response"},
+            {"title": "Gachibowli Flyover Maintenance", "message": "Scheduled lane closure on ORR Slip Road from 11 PM to 5 AM for light pole maintenance.", "category": "Traffic", "urgency": "Normal", "posted_by": "Cyberabad Traffic Command"},
+            {"title": "Water Supply Pressure Alert", "message": "High water demand reported in Madhapur sector 2. Booster pumps activated.", "category": "Water", "urgency": "High", "posted_by": "Hyderabad Water Works Board"},
+        ]
+        for b in bulletins_data:
+            db.add(CityBulletin(**b))
+
+    # 9. Citizen Reported Issues
+    if db.query(CitizenIssue).count() == 0:
+        issues_data = [
+            {"ticket_id": "TKT-HYD-901", "category": "Pothole", "title": "Deep Pothole near Cyber Towers Gate 3", "description": "Large dangerous pothole causing traffic slowing during peak hours.", "location": "Cyber Towers Gate 3", "zone": "Hitech City", "reporter_name": "Rajesh Kumar", "priority": "High", "status": "Crew Dispatched", "assigned_crew": "GHMC Road Repair Unit 2", "lat": 17.4506, "lng": 78.3814},
+            {"ticket_id": "TKT-HYD-902", "category": "Streetlight", "title": "Dark Stretch on Road 36 Jubilee Hills", "description": "5 consecutive streetlights offline creating safety hazard for night commuters.", "location": "Road 36 Checkpost", "zone": "Jubilee Hills", "reporter_name": "Priya Sharma", "priority": "Medium", "status": "Reported", "assigned_crew": "TSSPDCL Electrical Crew", "lat": 17.4318, "lng": 78.4070},
+            {"ticket_id": "TKT-HYD-903", "category": "Garbage Overflow", "title": "Uncollected Waste Overflow at KPHB Metro", "description": "Smart Bin #106 overflowing onto sidewalk creating sanitation hazard.", "location": "KPHB Phase 1 Bus Stop", "zone": "Kukatpally", "reporter_name": "Srinivas Rao", "priority": "High", "status": "Under Repair", "assigned_crew": "GHMC Sanitation Truck #7", "lat": 17.4944, "lng": 78.3992},
+            {"ticket_id": "TKT-HYD-904", "category": "Water Burst", "title": "Pipeline Leak near Lakdikapul Junction", "description": "Potable water leaking onto road surface from main line joint.", "location": "Lakdikapul Bus Stand", "zone": "Hyderabad Central", "reporter_name": "Mohammed Ali", "priority": "Critical", "status": "Crew Dispatched", "assigned_crew": "HMWSSB Emergency Rapid Crew", "lat": 17.4042, "lng": 78.4662},
+            {"ticket_id": "TKT-HYD-905", "category": "Traffic Signal", "title": "Stuck Red Signal at Paradise Circle", "description": "Traffic signal cycle frozen on red direction causing 1 km backup.", "location": "Paradise Circle Secunderabad", "zone": "Secunderabad", "reporter_name": "Anil Verma", "priority": "Critical", "status": "Resolved", "assigned_crew": "Traffic Signals Signal Team 1", "lat": 17.4418, "lng": 78.4985},
+        ]
+        for issue in issues_data:
+            db.add(CitizenIssue(**issue))
+
+    # 10. Operator Notes
+    if db.query(OperatorNote).count() == 0:
+        notes_data = [
+            {"operator_name": "Command Center Admin", "role": "admin", "zone": "Hitech City", "note": "Monitoring Cyber Towers flyover congestion. Traffic diversion planned for 6 PM."},
+            {"operator_name": "City Operator", "role": "user", "zone": "Kukatpally", "note": "Waste Bin #106 dispatch confirmed with GHMC Sanitation Crew #7."},
+            {"operator_name": "Command Center Admin", "role": "admin", "zone": "Hyderabad Central", "note": "HMWSSB pipeline crew deployed to Lakdikapul. Expected resolution within 2 hours."},
+        ]
+        for note in notes_data:
+            db.add(OperatorNote(**note))
+
+    # 11. Initial Activity Logs
+    if db.query(ActivityLog).count() == 0:
+        logs_data = [
+            {"operator_name": "Command Center Admin", "action_type": "BULLETIN", "module": "Collaboration", "details": "Issued Monsoon Heavy Rainfall Alert for Hitech City & Kukatpally."},
+            {"operator_name": "City Operator", "action_type": "DISPATCH", "module": "Waste", "details": "Dispatched GHMC Sanitation Truck #7 to KPHB Metro Station."},
+            {"operator_name": "Command Center Admin", "action_type": "ALERT", "module": "Emergency", "details": "Upgraded Cyber Towers Underpass incident severity to Critical."},
+        ]
+        for log in logs_data:
+            db.add(ActivityLog(**log))
+
     db.commit()
+

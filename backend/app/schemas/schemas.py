@@ -213,3 +213,104 @@ class DashboardSummary(BaseModel):
     emergency: dict
     pollution: dict
     last_updated: datetime
+
+
+# Collaboration Schemas
+class CitizenIssueCreate(BaseModel):
+    category: str
+    title: str
+    description: str
+    location: str
+    zone: Optional[str] = "Hyderabad Central"
+    reporter_name: Optional[str] = "Anonymous Citizen"
+    priority: Optional[str] = "Medium"
+    lat: Optional[float] = 17.4065
+    lng: Optional[float] = 78.4772
+
+
+class CitizenIssueUpdate(BaseModel):
+    status: Optional[str] = None
+    assigned_crew: Optional[str] = None
+    priority: Optional[str] = None
+
+
+class CitizenIssueOut(BaseModel):
+    id: int
+    ticket_id: str
+    category: str
+    title: str
+    description: str
+    location: str
+    zone: str
+    reporter_name: str
+    priority: str
+    status: str
+    assigned_crew: str
+    created_at: datetime
+    updated_at: datetime
+    lat: float
+    lng: float
+
+    class Config:
+        from_attributes = True
+
+
+class CityBulletinCreate(BaseModel):
+    title: str
+    message: str
+    category: Optional[str] = "General"
+    urgency: Optional[str] = "Normal"
+    posted_by: Optional[str] = "Command Center"
+
+
+class CityBulletinOut(BaseModel):
+    id: int
+    title: str
+    message: str
+    category: str
+    urgency: str
+    posted_by: str
+    active: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class ActivityLogCreate(BaseModel):
+    operator_name: str
+    action_type: str
+    module: str
+    details: str
+
+
+class ActivityLogOut(BaseModel):
+    id: int
+    operator_name: str
+    action_type: str
+    module: str
+    details: str
+    timestamp: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class OperatorNoteCreate(BaseModel):
+    operator_name: str
+    role: Optional[str] = "user"
+    zone: Optional[str] = "All Zones"
+    note: str
+
+
+class OperatorNoteOut(BaseModel):
+    id: int
+    operator_name: str
+    role: str
+    zone: str
+    note: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+

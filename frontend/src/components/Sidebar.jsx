@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   Wind,
   FileText,
+  Users,
   Settings,
   User,
   Shield,
@@ -22,10 +23,12 @@ const navItems = [
   { name: 'Water Analytics', path: '/dashboard/water', icon: Droplets },
   { name: 'Emergency Alerts', path: '/dashboard/emergency', icon: AlertTriangle, badge: 'Live' },
   { name: 'Pollution Monitoring', path: '/dashboard/pollution', icon: Wind },
+  { name: 'Field Collaboration', path: '/dashboard/collaboration', icon: Users, badge: 'Hub' },
   { name: 'Reports & Analytics', path: '/dashboard/reports', icon: FileText },
   { name: 'Settings', path: '/dashboard/settings', icon: Settings },
   { name: 'Profile', path: '/dashboard/profile', icon: User },
 ];
+
 
 export const Sidebar = ({ isOpen, onClose }) => {
   return (

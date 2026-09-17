@@ -7,7 +7,7 @@ from app.db.database import engine, Base, SessionLocal
 from app.db.seed import seed_data
 from app.services.simulator import run_simulation_loop
 
-from app.api.endpoints import auth, dashboard, traffic, waste, water, emergency, pollution, reports
+from app.api.endpoints import auth, dashboard, traffic, waste, water, emergency, pollution, reports, collaboration
 
 
 @asynccontextmanager
@@ -59,6 +59,8 @@ app.include_router(water.router, prefix=f"{settings.API_V1_STR}/water", tags=["W
 app.include_router(emergency.router, prefix=f"{settings.API_V1_STR}/emergencies", tags=["Emergency Alerts"])
 app.include_router(pollution.router, prefix=f"{settings.API_V1_STR}/pollution", tags=["Pollution Monitoring"])
 app.include_router(reports.router, prefix=f"{settings.API_V1_STR}/reports", tags=["Reports & Analytics"])
+app.include_router(collaboration.router, prefix=f"{settings.API_V1_STR}/collaboration", tags=["Collaboration & Operations"])
+
 
 
 @app.get("/")
